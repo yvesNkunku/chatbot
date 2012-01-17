@@ -1,118 +1,44 @@
+#Yves_Nkunku_Nzolani
+
 module Chatbot
-	
-  class AnalyseQuestion
-  
-	def initialize(str)
+class AnalyseQuestion
 
-    end
-# die Methode liesFrageSteuerung schaut, ob die angegebenen Satz eine Frage zur Wegbeschreibungentspricht
-# wenn ja dann ruft er die Methode analysiere_Frage auf
-  	def liesFrageSteuerung (satz)
-    
-    	muster = /(wie|zu[mr])?(?>der |dem |den )?(Parkplatz|Mensa|[a-z -Gebaeude]|Raum XYZ|Raum \w|Toiletten)/i
+  def initialize(str)
 
-			if satz.match(muster)
+  end
 
-    			analysiere_Frage(satz)
 
-    		else
-       			'unbekannt'
-    		end
-	
-  	end	
+  def analysiere_Frage(satz)
 
-# die Methode analysiere_Frage  filtert das Ziel aus dem eingegebenen Satz heraus und fragt, wo man sich momentan befindet
-# Sie liefert dann einen Standpunkt und ein Ziel
-# Schien einfacher noch einmal nach dem Standpunkt zu fragen, anstatt das Format: von...nach... zu verlangen! Es wird also 
-#Standpunkt und Zeil zurückgegeben oder nichts
-#der Satz wird hier zerlegt und wörter jeweils mit den Schlüssel verglichen
+    schluessel = ["Mensa", "Gebaeude", "A-Gebaeude","B-Gebaeude", "C-Gebaeude","D-Gebaeude","F-  
 
-  	def analysiere_Frage(satz)
+                 Gebaeude","N-Gebaeude","Bibliothek", "Raum", "AB-Foyer", "Parkplatz Ost", 
 
-      	schluessel = ["Mensa", "Gebaeude", "A-Gebaeude","B-Gebaeude", "C-Gebaeude","D-Gebaeude","F-Gebaeude","N-Gebaeude","Bibliothek", "Raum", "AB-
-	    Foyer", "Parkplatz Ost", "Parkplatz West", "Campus 2"]
+"Parkplatz West", "Campus 2"]
 
-        standpunkt =''
-        ziel = ''
-	   	count = 0   	 	   
-        zeichen = satz.split 
-           	      	      
- 	   	schluessel.each do |value|
+    myMuster = /vo[mn] (?>der |dem |den )?(.+) zu[mr]? (?>der |dem |den )?(.+)[.?]?\z/i
 
-  	      	zeichen.each do |kette|
-               
-				if value == kette
-      		    	ziel = kette
-		    		count +=1
+    if satz.match(myMuster)
 
-		    		if ziel == "Gebaeude" 
-		       			ziel = value+ " "+zeichen.last
-                        ziel = ziel.chomp("?")
-		       		    ziel = ziel.chomp(".")
-			          
-	            	elsif ziel == "Raum" 
-				   		ziel = zeichen.last
-			           	ziel = ziel.chomp("?")
-				   		ziel = ziel.chomp(".")
-			
-                    end		                              	
-				end			
-	    	end
-          	  
-    	end
+	satz = satz.chomp("?")
+	satz = satz.chomp("!")
 
-# Analyse vom Standpunkt
-# Am Ende wird den Standpunkt und das Ziel zurückgegeben, also entweder beide oder gar nichts.
-          	
-	  	if count != 0
 
-	    	puts "Wo befinden Sie sich gerade?"
- 	    	print '>'
-            count = 0	  
-            linie = gets
-            zeichen1 = linie.split
-	  
-            schluessel.each do |value|
-
-  	       		zeichen1.each do |kette|
+        myArray = satz.scan(myMuster)
    
-		 	    	if value == kette
-		    			standpunkt = kette
-	            
-		    			if standpunkt == "Gebaeude" 
-							standpunkt = value+ " "+zeichen1.last
-                        	standpunkt = standpunkt.chomp("?")
-                        	standpunkt = standpunkt.chomp(".")
+    startpunkt = myArray[0]
+    ziel = myArray[1]
 
-		    			elsif standpunkt == "Raum" 
-							standpunkt = zeichen1.last
-                        	standpunkt = standpunkt.chomp("?")
-							standpunkt = standpunkt.chomp(".")
-                    	end
-                    	            
-      		    	puts "Die Wegbeschreibung folgt in kuerze"
-		    		puts "Ihr Standpunkt: "+ standpunkt
-                    puts "Ihr Ziel: "+ ziel
-		    		count +=1
-                	return [standpunkt, ziel]  
-                	#end                 
-		 			end
-	      		end
-        	end
-	  	end
-	                         
-#arg = path_finder.new(standpunkt, ziel)
-           	                    
-	 	if count == 0
-		#puts "der angegebene Ort gibt es hier nicht"
-		#puts "Bitte achten Sie auf Schreibfehler"
-                return[nil, nil]
-	 	end       	 
-   	end
+   if schluessel.detect(startpunkt)
+    
+    puts startpunkt
+    
+    if schluessel.detect(ziel)
+    puts ziel
+    end
+    return [myArray]    
+   end
  end
-
-#ivy = AnalyseQuestion.new('str')
-#ivy.liesFrageSteuerung("ich muss in C-Gebaeude")
-
+end	
 end
-
+end
